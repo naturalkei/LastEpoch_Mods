@@ -347,8 +347,16 @@ namespace LastEpoch_Hud
         }
         public static Sprite GetItemIcon(ItemDataUnpacked item)
         {
-            Sprite result = null; // new Sprite();
-            try { result = UITooltipItem.GetItemSprite(item, ItemUIContext.Default); }
+            Sprite result = null;
+            try
+            {
+                if (item.IsNullOrDestroyed()) { return null; }
+                // 1.5.1 returns SoftRef<Sprite>. AssetOrNull is set only after the addressable is already loaded.
+                Il2CppLE.AssetBundles.SoftRef<Sprite> soft = item.GetItemSpriteFromData(ItemUIContext.Default);
+                if (soft.IsNullOrDestroyed()) { return null; }
+                Il2CppLE.AssetBundles.LoadRef<Sprite> load = Il2CppLE.AssetBundles.SoftRefExtensions.CreateLoadRef(soft, "GetItemIcon", 0);
+                if (!load.IsNullOrDestroyed()) { result = load.AssetOrNull; }
+            }
             catch { Main.logger_instance?.Error("Error GetItemIcon"); }
 
             return result;

@@ -88,6 +88,10 @@
       <HintPath>$(LastEpochPath)\MelonLoader\Il2CppAssemblies\Il2CppLE.Core.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="LE.Addressables">
+      <HintPath>$(LastEpochPath)\MelonLoader\Il2CppAssemblies\Il2CppLE.Addressables.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="MelonLoader">
       <HintPath>$(LastEpochPath)\MelonLoader\net6\MelonLoader.dll</HintPath>
       <Private>False</Private>

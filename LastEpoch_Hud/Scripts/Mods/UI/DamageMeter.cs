@@ -508,11 +508,7 @@ namespace LastEpoch_Hud.Scripts.Mods.UI
                     {
                         if (ab.abilityName == ability_name)
                         {
-                            if (!ab.abilitySprite.IsNullOrDestroyed())
-                            {
-                                result = ab.abilitySprite;
-                                break;
-                            }
+                            break;
                         }
                     }
                     if (result == null)
@@ -532,7 +528,7 @@ namespace LastEpoch_Hud.Scripts.Mods.UI
                                         {
                                             if (!creationReferences.thisAbility.IsNullOrDestroyed())
                                             {
-                                                result = creationReferences.thisAbility.abilitySprite;
+                                                result = null;
                                             }
                                         }
                                         break;

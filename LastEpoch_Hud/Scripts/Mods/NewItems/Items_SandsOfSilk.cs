@@ -364,18 +364,7 @@ namespace LastEpoch_Hud.Scripts.Mods.NewItems
                 }
             }
 
-            [HarmonyPatch(typeof(UITooltipItem), "GetItemSprite")]
-            public class UITooltipItem_GetItemSprite
-            {
-                [HarmonyPostfix]
-                static void Postfix(ref Sprite __result, ItemData __0)
-                {
-                    if (__0.getAsUnpacked().FullName == Get_Unique_Name() && !Icon.IsNullOrDestroyed())
-                    {
-                        __result = Icon;
-                    }
-                }
-            }
+            // 1.5.1: UITooltipItem.GetItemSprite returns SoftRef<Sprite>. A live Sprite cannot be wrapped, so the tooltip override is deferred.
         }
         public class Visual
         {

@@ -215,7 +215,7 @@ namespace LastEpoch_Hud.Scripts.Mods.Maxroll
                         sealedAffixType = SealedAffixType.FromCorruption
                     };
 
-                    item.ApplyCorruptionOutcome(Refs_Manager.player_actor, CorruptionOutcome.AddsCorruptedAffix, out int addedAffixId, out int toRemove, out bool affixSelected);
+                    item.ApplyCorruptionOutcome(Refs_Manager.player_actor, CorruptionOutcome.AddsCorruptedAffix, false, 0, out int addedAffixId, out int toRemove, out bool affixSelected);
                     if (item.TryGetSealedCorruptedAffixe(out ItemAffix sealedCorruptedAffix))
                     {
                         sealedCorruptedAffix.affixId = firstCorruptedAffix.affixId;
@@ -470,7 +470,7 @@ namespace LastEpoch_Hud.Scripts.Mods.Maxroll
                 {
                     if (ability.name == mainskill_name)
                     {
-                        mainskill_icon = ability.abilitySprite;
+                        mainskill_icon = null;
                         break;
                     }
                 }
@@ -495,7 +495,7 @@ namespace LastEpoch_Hud.Scripts.Mods.Maxroll
                             specialized_names[j] = ability.abilityName;
                             specialized_ids[j] = ability.playerAbilityID;
                             specialized_ability[j] = ability;
-                            specialized_icons[j] = ability.abilitySprite;
+                            specialized_icons[j] = null;
                             break;
                         }
                     }
@@ -513,7 +513,7 @@ namespace LastEpoch_Hud.Scripts.Mods.Maxroll
                         {
                             active_names[j] = ability.abilityName;
                             active_ability[j] = ability;
-                            active_icons[j] = ability.abilitySprite;
+                            active_icons[j] = null;
                             break;
                         }
                     }

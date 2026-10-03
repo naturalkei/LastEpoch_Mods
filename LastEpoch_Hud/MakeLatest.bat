@@ -30,8 +30,12 @@ IF "!RAR!"=="" (
     WHERE WinRAR.exe >nul 2>&1 && FOR /F "delims=" %%P IN ('WHERE WinRAR.exe') DO SET "RAR=%%P"
 )
 
-IF "!RAR!"=="" (
-    echo [MakeLatest] WinRAR not found. Install WinRAR to create .rar archives.
+SET "SEVENZIP="
+IF EXIST "C:\Program Files\7-Zip\7z.exe" SET "SEVENZIP=C:\Program Files\7-Zip\7z.exe"
+IF "!SEVENZIP!"=="" IF EXIST "C:\Program Files (x86)\7-Zip\7z.exe" SET "SEVENZIP=C:\Program Files (x86)\7-Zip\7z.exe"
+
+IF "!RAR!"=="" IF "!SEVENZIP!"=="" (
+    echo [MakeLatest] WinRAR and 7-Zip were not found.
     exit /b 1
 )
 
@@ -49,12 +53,18 @@ FOR %%C IN (Keyboard WinGamepad) DO (
             IF EXIST "!SRC!\%%F" del "!SRC!\%%F"
         )
 
-        SET "OUT=%LATEST_DIR%\LastEpoch_Hud(%%C).rar"
-        IF EXIST "!OUT!" del "!OUT!"
-
         cd /d "!SRC!"
-        "!RAR!" a -r -ibck "!OUT!"
-        echo Created: !OUT!
+        IF NOT "!RAR!"=="" (
+            SET "OUT=%LATEST_DIR%\LastEpoch_Hud(%%C).rar"
+            IF EXIST "!OUT!" del "!OUT!"
+            "!RAR!" a -r -ibck "!OUT!"
+            echo Created: !OUT!
+        ) ELSE (
+            SET "OUT=%LATEST_DIR%\LastEpoch_Hud(%%C).zip"
+            IF EXIST "!OUT!" del "!OUT!"
+            "!SEVENZIP!" a -tzip "!OUT!" *
+            echo Created: !OUT!
+        )
     ) ELSE (
         echo [MakeLatest] Skipped %%C - no build found
     )

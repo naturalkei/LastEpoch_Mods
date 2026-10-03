@@ -1,4 +1,4 @@
-﻿//using HarmonyLib;
+//using HarmonyLib;
 //using Il2Cpp;
 
 namespace LastEpoch_Hud.Scripts.Mods.Character
@@ -93,12 +93,12 @@ namespace LastEpoch_Hud.Scripts.Mods.Character
             [HarmonyPrefix]
             static void Prefix(EquipmentVisualsManager __instance, Il2CppCysharp.Threading.Tasks.UniTask __result, EquipmentType __0, ref int __1, bool __2, ref ushort __3)
             {
-                if ((__instance.didAwake) && (__instance.name == "v_MainPlayer") && (wanted_class > -1) && (backup_class > -1) && (!ItemList.instance.IsNullOrDestroyed()))
+                if ((__instance.didAwake) && (__instance.name == "v_MainPlayer") && (wanted_class > -1) && (backup_class > -1) && (!ItemList.get().IsNullOrDestroyed()))
                 {
                     //Check item class req
                     bool class_req = false;
                     int item_type = 0;
-                    foreach (ItemList.BaseEquipmentItem baseEquipmentItem in ItemList.instance.EquippableItems)
+                    foreach (ItemList.BaseEquipmentItem baseEquipmentItem in ItemList.get().EquippableItems)
                     {
                         if (baseEquipmentItem.type == __0)
                         {
@@ -113,12 +113,12 @@ namespace LastEpoch_Hud.Scripts.Mods.Character
                         }
                         item_type++;
                     }
-                    if ((class_req) && (item_type < ItemList.instance.EquippableItems.Count))
+                    if ((class_req) && (item_type < ItemList.get().EquippableItems.Count))
                     {
                         if (!__2) //Check for another Base item without class requirement
                         {
                             int i = 0;
-                            foreach (ItemList.EquipmentItem equipmentItem in ItemList.instance.EquippableItems[item_type].subItems)
+                            foreach (ItemList.EquipmentItem equipmentItem in ItemList.get().EquippableItems[item_type].subItems)
                             {
                                 if (equipmentItem.classRequirement == ItemList.ClassRequirement.None)
                                 {
@@ -137,9 +137,9 @@ namespace LastEpoch_Hud.Scripts.Mods.Character
                                 {
                                     int unique_subtype = -1;
                                     if (unique.subTypes.Count > 0) { unique_subtype = unique.subTypes[0]; }
-                                    if ((unique_subtype > -1) && (unique_subtype < ItemList.instance.EquippableItems[item_type].subItems.Count))
+                                    if ((unique_subtype > -1) && (unique_subtype < ItemList.get().EquippableItems[item_type].subItems.Count))
                                     {
-                                        if (ItemList.instance.EquippableItems[item_type].subItems[unique_subtype].classRequirement == ItemList.ClassRequirement.None)
+                                        if (ItemList.get().EquippableItems[item_type].subItems[unique_subtype].classRequirement == ItemList.ClassRequirement.None)
                                         {
                                             __1 = unique_subtype;
                                             __3 = unique.uniqueID;
@@ -169,15 +169,15 @@ namespace LastEpoch_Hud.Scripts.Mods.Character
             [HarmonyPrefix]
             static void Prefix(EquipmentVisualsManager __instance, int __0, ref int __1, int __2, ref ushort __3)
             {
-                if ((__instance.didAwake) && (__instance.name == "v_MainPlayer") && (wanted_class > -1) && (backup_class > -1) && (!ItemList.instance.IsNullOrDestroyed()))
+                if ((__instance.didAwake) && (__instance.name == "v_MainPlayer") && (wanted_class > -1) && (backup_class > -1) && (!ItemList.get().IsNullOrDestroyed()))
                 {
                     //Check item class req
                     bool class_req = false;
-                    if (__0 < ItemList.instance.EquippableItems.Count)
+                    if (__0 < ItemList.get().EquippableItems.Count)
                     {
-                        if (__1 < ItemList.instance.EquippableItems[__0].subItems.Count)
+                        if (__1 < ItemList.get().EquippableItems[__0].subItems.Count)
                         {
-                            if (ItemList.instance.EquippableItems[__0].subItems[__1].classRequirement != ItemList.ClassRequirement.None)
+                            if (ItemList.get().EquippableItems[__0].subItems[__1].classRequirement != ItemList.ClassRequirement.None)
                             {
                                 class_req = true;
                             }
@@ -197,7 +197,7 @@ namespace LastEpoch_Hud.Scripts.Mods.Character
                         if (!IsUnique) //Check for another Base item without class requirement
                         {
                             int i = 0;
-                            foreach (ItemList.EquipmentItem equipmentItem in ItemList.instance.EquippableItems[__0].subItems)
+                            foreach (ItemList.EquipmentItem equipmentItem in ItemList.get().EquippableItems[__0].subItems)
                             {
                                 if (equipmentItem.classRequirement == ItemList.ClassRequirement.None)
                                 {
@@ -215,9 +215,9 @@ namespace LastEpoch_Hud.Scripts.Mods.Character
                                 {
                                     int unique_subtype = -1;
                                     if (unique.subTypes.Count > 0) { unique_subtype = unique.subTypes[0]; }
-                                    if ((unique_subtype > -1) && (unique_subtype < ItemList.instance.EquippableItems[__0].subItems.Count))
+                                    if ((unique_subtype > -1) && (unique_subtype < ItemList.get().EquippableItems[__0].subItems.Count))
                                     {
-                                        if (ItemList.instance.EquippableItems[__0].subItems[unique_subtype].classRequirement == ItemList.ClassRequirement.None)
+                                        if (ItemList.get().EquippableItems[__0].subItems[unique_subtype].classRequirement == ItemList.ClassRequirement.None)
                                         {
                                             __1 = unique_subtype;
                                             __3 = unique.uniqueID;

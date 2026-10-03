@@ -1,4 +1,4 @@
-﻿using HarmonyLib;
+using HarmonyLib;
 using Il2Cpp;
 using Il2CppTMPro;
 using MelonLoader;
@@ -69,7 +69,7 @@ namespace LastEpoch_Hud.Scripts.Mods.Craft
                         UnityEngine.Color color = crafting_slot_manager.defAffixColor; //T1 to T4
                         if (affix.affixTier == 4) { color = crafting_slot_manager.maxCraftColor; } //T5
                         else if (affix.affixTier > 4) { color = crafting_slot_manager.exaltColor; } //T6 to T8
-                        slot.SetVisuals(affix, AffixList.instance.GetAffix(affix.affixId), false, color);
+                        slot.SetVisuals(affix, AffixList.get().GetAffix(affix.affixId), false, color);
                         slot.gameObject.active = true;
                     }
                 }
@@ -89,7 +89,7 @@ namespace LastEpoch_Hud.Scripts.Mods.Craft
                     GameObject seal_primo_name_obj = Functions.GetChild(crafting_slot_manager.sealedPrimordialAffixHolder.gameObject, "AffixName");
                     if (!seal_primo_name_obj.IsNullOrDestroyed())
                     {
-                        seal_primo_name_obj.GetComponent<TextMeshProUGUI>().text = AffixList.instance.GetAffixName(seal_primordial_id);
+                        seal_primo_name_obj.GetComponent<TextMeshProUGUI>().text = AffixList.get().GetAffixName(seal_primordial_id);
                     }
                 }
             }
@@ -315,7 +315,7 @@ namespace LastEpoch_Hud.Scripts.Mods.Craft
                                     if (glyph_of_chaos)
                                     {
                                         System.Collections.Generic.List<AffixList.SingleAffix> affix_list = new System.Collections.Generic.List<AffixList.SingleAffix>();
-                                        foreach (AffixList.SingleAffix aff in AffixList.instance.singleAffixes)
+                                        foreach (AffixList.SingleAffix aff in AffixList.get().singleAffixes)
                                         {
                                             if ((aff.type == affix.affixType) && (aff.CanRollOn(item)))
                                             //if ((aff.type == affix.affixType) && (aff.CanRollOnItemType(item.itemType, item.TryCast<ItemDataUnpacked>().classReq)))
@@ -345,7 +345,7 @@ namespace LastEpoch_Hud.Scripts.Mods.Craft
                         if (glyph_of_envy)
                         {
                             System.Collections.Generic.List<int> subtype_list = new System.Collections.Generic.List<int>();
-                            foreach (ItemList.BaseEquipmentItem base_item in ItemList.instance.EquippableItems)
+                            foreach (ItemList.BaseEquipmentItem base_item in ItemList.get().EquippableItems)
                             {
                                 if (base_item.baseTypeID == item.itemType)
                                 {

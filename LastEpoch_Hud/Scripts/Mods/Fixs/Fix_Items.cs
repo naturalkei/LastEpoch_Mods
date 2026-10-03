@@ -1,4 +1,4 @@
-﻿using HarmonyLib;
+using HarmonyLib;
 using Il2Cpp;
 using System;
 
@@ -11,9 +11,9 @@ namespace LastEpoch_Hud.Scripts.Mods.Fixs
         {
             bool result = false;
             bool found = false;
-            if (!AffixList.instance.IsNullOrDestroyed())
+            if (!AffixList.get().IsNullOrDestroyed())
             {
-                foreach (AffixList.Affix affix in AffixList.instance.singleAffixes)
+                foreach (AffixList.Affix affix in AffixList.get().singleAffixes)
                 {
                     if (affix.affixId == affix_id)
                     {
@@ -24,7 +24,7 @@ namespace LastEpoch_Hud.Scripts.Mods.Fixs
                 }
                 if (!found)
                 {
-                    foreach (AffixList.Affix affix in AffixList.instance.multiAffixes)
+                    foreach (AffixList.Affix affix in AffixList.get().multiAffixes)
                     {
                         if (affix.affixId == affix_id)
                         {
@@ -36,7 +36,7 @@ namespace LastEpoch_Hud.Scripts.Mods.Fixs
             }
             else
             {
-                Main.logger_instance.Error("Fix_Items.Verify_AffixID() : AffixList.instance is null, Can't check if affix exist");
+                Main.logger_instance.Error("Fix_Items.Verify_AffixID() : AffixList.get() is null, Can't check if affix exist");
                 result = true;
             }
             

@@ -368,6 +368,7 @@ FodyWeavers.xsd
 /AssetBundleExport/UserSettings/
 /AssetBundleExport/ProjectSettings/boot.config
 /AssetBundleExport/Assets/AssetBundles/
+/Directory.Build.props
 
 # Unity
 #
