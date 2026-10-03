@@ -118,22 +118,25 @@ namespace LastEpoch_Hud.Scripts
 
             if ((game_uibase.IsNullOrDestroyed()) && (!UIBase.instance.IsNullOrDestroyed())) { game_uibase = UIBase.instance; }
             if ((epoch_input_manager.IsNullOrDestroyed()) && (!EpochInputManager.instance.IsNullOrDestroyed())) { epoch_input_manager = EpochInputManager.instance; }                               //Used to block input
-            if ((character_class_list.IsNullOrDestroyed()) && (!CharacterClassList.get().IsNullOrDestroyed())) { character_class_list = CharacterClassList.get(); }                           //Hud, Maxroll
-            if ((item_list.IsNullOrDestroyed()) && (!ItemList.get().IsNullOrDestroyed())) { item_list = ItemList.get(); }                                                                     //Hud, Blessings, Materials, Req, Sockets, NewItems
-            if (unique_list.IsNullOrDestroyed())
-            {
-                if (UniqueList.instance.IsNullOrDestroyed()) { UniqueList.getUnique(0); }                                                                                                           //Force initialize Unique list
-                if (!UniqueList.instance.IsNullOrDestroyed()) { unique_list = UniqueList.instance; }                                                                                                //NewItems
-            }
-            if (ability_manager.IsNullOrDestroyed()) { ability_manager = AbilityManager.instance; }                                                                                                 //Mjolner
-            if (player_data_tracker.IsNullOrDestroyed()) { player_data_tracker = PlayerFinder.getPlayerDataTracker(); }                                                                             //Hud
-            if ((stash_panel_ui.IsNullOrDestroyed()) && (!StashPanelUI.Instance.IsNullOrDestroyed())) { stash_panel_ui = StashPanelUI.Instance; }                                                   //Hud, QuadStash
 
             if (Scenes.IsGameScene())
             {
+                // 1.5.1: list getters throw InitGuard until GameLoader has created them. Splash and login are not game scenes.
+                if ((character_class_list.IsNullOrDestroyed()) && (!CharacterClassList.get().IsNullOrDestroyed())) { character_class_list = CharacterClassList.get(); }                           //Hud, Maxroll
+                if ((item_list.IsNullOrDestroyed()) && (!ItemList.get().IsNullOrDestroyed())) { item_list = ItemList.get(); }                                                                     //Hud, Blessings, Materials, Req, Sockets, NewItems
+                if (unique_list.IsNullOrDestroyed())
+                {
+                    if (UniqueList.instance.IsNullOrDestroyed()) { UniqueList.getUnique(0); }                                                                                                           //Force initialize Unique list
+                    if (!UniqueList.instance.IsNullOrDestroyed()) { unique_list = UniqueList.instance; }                                                                                                //NewItems
+                }
+                if (ability_manager.IsNullOrDestroyed()) { ability_manager = AbilityManager.instance; }                                                                                                 //Mjolner
+                if (player_data_tracker.IsNullOrDestroyed()) { player_data_tracker = PlayerFinder.getPlayerDataTracker(); }                                                                             //Hud
+                if ((stash_panel_ui.IsNullOrDestroyed()) && (!StashPanelUI.Instance.IsNullOrDestroyed())) { stash_panel_ui = StashPanelUI.Instance; }                                                   //Hud, QuadStash
+
                 if (player_spawn_manager.IsNullOrDestroyed()) { player_spawn_manager = PlayerSpawnManager.instance; }                                                                                             //
                 if ((quest_list.IsNullOrDestroyed()) && (!QuestList.get().IsNullOrDestroyed())) { quest_list = QuestList.get(); }                                                             //Complete MainQuest
                 if ((scene_list.IsNullOrDestroyed()) && (!SceneList.instance.IsNullOrDestroyed())) { scene_list = SceneList.instance; }                                                             //Complete MainQuest
+                if (!scene_list.IsNullOrDestroyed()) { Hud_Manager.Content.Scenes.Teleport.Init(); }
                 //craft_materials_holder //Need to fix for LE 1.4
                 if (InventoryPanelUI.IsNullOrDestroyed()) { InventoryPanelUI = UnityEngine.Object.FindObjectOfType<Il2Cpp.InventoryPanelUI>(); }                                   //AutoStore
                 if ((BlessingsPanel.IsNullOrDestroyed()) && (!InventoryPanelUI.IsNullOrDestroyed())) { BlessingsPanel = InventoryPanelUI.blessingPanel; }                                           //Blessings
