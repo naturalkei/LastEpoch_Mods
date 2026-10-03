@@ -10,8 +10,9 @@
 | 기준 커밋 | `6054a5f218594b7c8d632167ec6ac47fff9d7f46` (포크 `master`이자 RCInet `master`, 2026-04-15) |
 | 문서 커밋 기준 | 포크 기본 브랜치 `main` = `6ef5130637df5401b416f150d9c1ce5557de28a3` (`chore: add docs`, 2026-10-03). `6054a5f2` 위에 `docs/build-patch.md`만 있다 |
 | 조사에 쓰지 않는 클론 | `E:\dev\LastEpoch_Mods`. 그 클론의 `origin`은 RCInet이고, 조사 시점 HEAD는 `be5fbacd`로 `origin/master`보다 13커밋 뒤였다. 구현은 그 경로에서 하지 않는다 |
-| 로컬 게임 | `E:\SteamLibrary\steamapps\common\Last Epoch`, Steam app `899770`, `buildid` `25672295` |
-| 게임 식별자 | `Last Epoch_Data\build_hash.txt` = `bf5a46c674908886ecdabb6e9906b8a3bf81ec5b`. `app.info`는 회사명과 `Last Epoch`만 있어 Game Version은 `UNKNOWN` |
+| 로컬 게임 | `E:\SteamLibrary\steamapps\common\Last Epoch`, Steam app `899770` |
+| 11:48 로그 시점 | `buildid` `25672295`, `build_hash.txt` = `bf5a46c674908886ecdabb6e9906b8a3bf81ec5b`. `Latest.log`와 `LastPlayed` 11:50:22는 이 빌드다. 그 뒤 설치본이 바뀌었다 |
+| 현재 설치본 | 2026-10-03 12:47:22 KST. `buildid` `25690669`, `build_hash.txt` = `5cec0d5385ee8ac4d7d557676361703c0f058813`. `GameAssembly.dll`과 `global-metadata.dat`는 12:47:20. `GameAssembly.dll` SHA512 = `526F4AFA67253B22A11FC0A55236EFE5F6211E57AA4E9999B6FB0E7A298DF5E6843A70CF642F691971D00156FE833437156464EDA4E76919FBA36D67FF23A1D4`. `globalgamemanagers`의 Unity 문자열은 여전히 `6000.4.8f1`. `app.info`에는 버전 번호가 없다 |
 | 로더 | MelonLoader v0.7.3 Open-Beta, Hash `BDD43DC0F3893C208C95389B863AB61C967AE14204DA0DD8051647E754C8709B` |
 
 이 문서는 계획만 담는다. 게임 설치본과 모드 동작 코드는 수정하지 않았다. 구현은 `## PR Plan`의 순서대로 한다.
@@ -22,7 +23,7 @@
 
 - 이슈 표와 마이그레이션 계획 초안을 썼다. 리뷰 1회에서 14건(critical 1, major 6, minor 5, nit 2)을 반영했다. 재검토는 이 문서 커밋 다음에 한다.
 - 작업 트리를 `E:\dev\LastEpoch_Mods_fork`로 고정했다. 포크 `master`는 이미 `6054a5f2`이고, 기본 브랜치 `main`은 그 위에 `docs/build-patch.md`가 있는 `6ef51306`이다. `E:\dev\LastEpoch_Mods`의 `be5fbacd`는 사용하지 않는다.
-- 로더 실패는 재현된 사실이다. G1(모드 DLL을 뺀 부팅)은 아직 실행하지 않았다. Harmony 전수 표와 `dotnet build`도 아직이다.
+- 로더 실패는 11:48 세션의 사실이다. 12:47에 게임이 `buildid` `25690669`로 바뀌어, 그 로그의 interop을 현재 바이너리의 시그니처로 쓰지 않는다. G1은 아직 실행하지 않았다. Harmony 전수 표와 `dotnet build`도 아직이다.
 - 코드 포팅, 번들 재빌드, 세이브 스키마 변경은 시작하지 않았다.
 
 ## Overview
@@ -75,7 +76,7 @@
 - `BadImageFormatException` → inner `Duplicate type with name '<>O' in assembly 'UnityEngine.CoreModule'`.
 - 경고: `LastEpoch_Hud` missing dependency `UnityEngine.CoreModule` v0.0.0.0. 그 다음 `1 Mod loaded.` 그리고 `No Support Module Loaded!`.
 
-지원 모듈 파일은 없다가 아니다. `MelonLoader\Dependencies\SupportModules\Il2Cpp.dll`이 있다. 로그는 그 모듈이 초기화됐다는 줄을 찍지 않았다. **모드를 치우지 않은 실험만으로는, 실패가 모드 의존성인지 로더 자체인지 갈라지지 않는다.** `UserData\Loader.cfg`는 0.7 기본값이다. `force_regeneration = false`, `version_override` 빈 문자열, `harmony_log_level = "Warn"`. 이번 세션 로그는 그럼에도 `Assembly Generation Needed!`였다. 같은 생성기 버전으로 다시 돌려도 이번과 같은 DLL이 나올 가능성이 크고, 그 DLL은 이미 아래 로드 실험에서 CLR에 거부됐다.
+지원 모듈 파일은 없다가 아니다. `MelonLoader\Dependencies\SupportModules\Il2Cpp.dll`이 있다. 로그는 그 모듈이 초기화됐다는 줄을 찍지 않았다. **모드를 치우지 않은 실험만으로는, 실패가 모드 의존성인지 로더 자체인지 갈라지지 않는다.** `UserData\Loader.cfg`는 0.7 기본값이다. `force_regeneration = false`, `version_override` 빈 문자열, `harmony_log_level = "Warn"`. 이번 세션 로그는 그럼에도 `Assembly Generation Needed!`였다. 그 문장은 **같은 `GameAssembly.dll`** 에만 해당한다. 12:47 설치본의 SHA512는 `Config.cfg`의 `GameAssemblyHash`와 다르므로, 같은 생성기라도 같은 DLL이 다시 나온다고 보지 않는다. 11:49에 만든 `UnityEngine.CoreModule.dll`은 그 세션의 CLR 로드에서 거부됐다.
 
 `Mods` 폴더에는 이 저장소 밖의 파일도 있다. `LastEpoch_Hud.dll` (2026-04-14, 584192 bytes), `LastEpoch_Hud-1.4.rar` (2026-04-02, 2187913 bytes), `LastEpoch_Hud.7z`, `Desktop.Robot.dll` (2023-07-11). rar 안의 파일 목록은 이 문서에서 풀지 않았다. 게임 폴더 산출물을 git에 넣지 않는다.
 
@@ -192,7 +193,7 @@ G4는 G5의 선행 조건이 아니다. G5는 support module(G2) 뒤에 번들 �
 4. `git push -u origin season5/1.5.1`. **`origin/master`와 `origin/main`은 force-push하지 않는다.**
 5. `Mods\LastEpoch_Hud.dll`을 `LastEpoch_Hud.dll.pre-1.5`로 복사해 둔다 (게임 폴더, git 밖). rar(2026-04-02)보다 설치된 DLL(2026-04-14)이 새다. 롤백 후보는 둘 다 남긴다. rar을 풀어 안에 `LastEpoch_Hud.dll`과 `Assets/lastepochmods`가 같이 있는지는 G0 체크리스트이며, 이 문서는 목록을 확인하지 않았다.
 
-**G1. 모드 없는 지원 모듈.** `Mods\*.dll`을 폴더 밖으로 옮긴다. `LastEpoch_Hud.dll`만이 아니라 `Desktop.Robot.dll`도 옮긴다. rar은 로더가 읽지 않는다. `force_regeneration`은 끄고, 방금 생성된 `Il2CppAssemblies`는 유지한 채 한 번 띄운다. 로그에서 다음만 기록한다.
+**G1. 모드 없는 지원 모듈.** 먼저 `Config.cfg`의 `GameAssemblyHash`와 현재 `GameAssembly.dll` SHA512를 비교한다. 2026-10-03 12:47 기준으로 전자는 `69E1BBB6330639EA18522005DFC82279768550567694AA963CCF6F4EE5EAA13E9A530EFA8B2B5793A932ECE366D960352FF981331B0F503C59D9C362F5F9D7EF`이고, 후자는 `526F4AFA67253B22A11FC0A55236EFE5F6211E57AA4E9999B6FB0E7A298DF5E6843A70CF642F691971D00156FE833437156464EDA4E76919FBA36D67FF23A1D4`다. 둘이 다르면 11:49 `Il2CppAssemblies`를 현재 interop으로 유지하지 않는다. `Mods\*.dll`(`LastEpoch_Hud.dll`, `Desktop.Robot.dll`)을 밖으로 옮긴 뒤 로더가 새 metadata로 다시 생성하게 두고, 재생성 로그와 새 DLL의 SHA256을 먼저 남긴다. rar은 로더가 읽지 않는다. 해시가 같을 때만 `force_regeneration = false`로 기존 어셈블리를 유지한 채 빈 Mods 부팅을 한다. 로그에서 다음만 기록한다.
 
 - `No Support Module Loaded`가 **재현**되면 버그는 모드 코드가 아니다. G2는 로더/생성 DLL이다.
 - 그 에러가 **사라지고** 지원 모듈 초기화 로그가 생기면, 모드의 `UnityEngine.CoreModule` 의존성이 거부 로그를 만든 것이다. G2는 "모드가 그 DLL을 어떻게 참조할지"다.
@@ -202,7 +203,7 @@ G4는 G5의 선행 조건이 아니다. G5는 support module(G2) 뒤에 번들 �
 
 1. G1 결과를 적는다. 원인 단정 금지.
 2. 0.7.3보다 새로운 MelonLoader 빌드가 Unity `6000.4.8` / metadata 39를 릴리스 노트에 적으면, **게임 폴더의 MelonLoader를 덮어쓰기 전에** `MelonLoader\`와 `UserData\Loader.cfg`를 복사해 둔다. 새 빌드로 생성기를 바꾸고 `force_regeneration = true`를 한 번만 켠다. 성공 조건은 support module 로드와, throwaway `Assembly.LoadFrom`이 생성 CoreModule에 대해 예외를 내지 않는 것이다. #1159를 "고쳐진 티켓"으로 인용하지 않는다. 그 빌드에서 G1/G2가 통과할 때만 채택한다.
-3. **같은** Cpp2IL `2022.1.0-pre-release.21` + Il2CppInterop `1.5.1-ci.845`에서 `force_regeneration`만 켜는 것은 폴백 음성 대조군이다. 2026-10-03 로그가 이미 재생성을 했고 그 산출물이 CLR에 거부됐다.
+3. **같은** Cpp2IL `2022.1.0-pre-release.21` + Il2CppInterop `1.5.1-ci.845`에서, **GameAssembly 해시가 11:48과 같을 때** `force_regeneration`만 켜는 것은 폴백 음성 대조군이다. 그 세션은 이미 재생성을 했고 그 산출물이 CLR에 거부됐다. 12:47처럼 해시가 바뀌었으면 이 대조군이 아니다. 새 바이너리로 생성한 DLL을 다시 로드해 본다.
 4. 취약 폴백: 복사본 DLL에서만 Cecil로 `<>O` 중첩 타입의 이름을 바꾸거나, 로드가 성공할 때까지 최소 편집을 찾는다. 편집 DLL, 원본 `.bak`, 편집 내용, 전후 SHA256을 `docs/loader-spike.md`에 적고 git에는 넣지 않는다. 게임 업데이트마다 깨진다.
 5. G1이 빈 Mods에서도 실패하고, 더 새로운 MelonLoader도 G2를 통과하지 못하면 그때만 대안 B(BepInEx)를 연다. 그 전에 BepInEx 포트를 시작하지 않는다.
 
@@ -298,9 +299,9 @@ Il2Cpp transpiler 패치는 없다 (`HarmonyTranspiler` 검색 결과 없음). �
 
 `rollLegendaryPotential`은 두 번째 행이다. 옛 이름은 없고, `RollLegendaryPotential`의 반환 `Int32`가 기존 `ref int __result`와 같다.
 
-이번 스팟 체크 범위 (커버리지 명시): `Il2CppLE.dll` (52,779,008 bytes), `Il2CppLE.Core.dll`, `Il2CppLE.UI.Controls.dll`, `Il2CppUniTask.dll`, `UnityEngine.UI.dll`, `UnityEngine.CoreModule.dll`, `Il2CppRewired_Core.dll`. 날짜 2026-10-03, `buildid` 25672295, hash `bf5a46c6...`. **전수 검사가 아니다.** 주석 처리된 패치와 NewItems 내부의 반복 locale 패치는 표에서 빼었다.
+이번 스팟 체크 범위 (커버리지 명시): 11:49에 생성된 `Il2CppLE.dll` (52,779,008 bytes), `Il2CppLE.Core.dll`, `Il2CppLE.UI.Controls.dll`, `Il2CppUniTask.dll`, `UnityEngine.UI.dll`, `UnityEngine.CoreModule.dll`, `Il2CppRewired_Core.dll`. 그 파일은 `buildid` `25672295`, hash `bf5a46c6...`용이다. **12:47 설치본(`25690669` / `5cec0d53...`)의 시그니처가 아니다.** 전수 검사도 아니다. 주석 처리된 패치와 NewItems 내부의 반복 locale 패치는 표에서 빼었다. PR4의 `adapt`는 12:47 `GameAssembly`로 다시 생성한 DLL에서 Cecil이 같은 시그니처를 보여줄 때만 유지한다.
 
-| 타입.메서드 | 1.5.1 interop | 판정 |
+| 타입.메서드 | 11:49 interop (`25672295`) | 판정 |
 | --- | --- | --- |
 | `ExperienceTracker.GainExp(Int64 characterExp, Int64 abilityExp, Int64 expForFavourGain)` ret `void` | found, `Il2CppLE.dll` | keep. `Character_Experience_Multiplier`가 `ref long __0`, `Character_Ability_Experience_Multiplier`가 `ref long __1`, `Character_Favor_Experience_Multiplier`가 `ref long __2`. 인덱스는 interop 이름과 같다. 한 슬롯만 고치거나 세 long을 같이 곱하지 않는다. G6은 값만 확인한다. 플래그 기본 false |
 | `GainExpFromEnemyOrMote(Int64)`, `GainExpDirect(Int64,Boolean)` | found | keep, 동일 조건 |
@@ -466,7 +467,7 @@ BepInEx 6은 다른 플러그인 수명주기, 다른 Harmony 인스턴스 생�
 
 ### C. 1.4 계열에 얼리고 포트를 안 한다
 
-비용은 가장 낮다. 다만 요청이 1.5.1 대응이고, 로컬 게임은 이미 `buildid` 25672295다. 얼리면 사용자는 모드를 뺀 채로 시즌 5를 하거나, 깨진 `1 Mod loaded` 로그를 성공으로 오해한다. 롤백 산출물로 `LastEpoch_Hud-1.4.rar`(2026-04-02)와 설치된 DLL(2026-04-14)을 남기는 이유이지, 릴리스 계획은 아니다. 둘 다 1.4.7 노트 일자(2026-05-17)보다 빠르므로 "검증된 1.4.7 빌드"라고 부르지 않는다. 이름은 파일명 그대로 `LastEpoch_Hud-1.4.rar`다.
+비용은 가장 낮다. 다만 요청이 1.5.1 대응이고, 로컬 게임은 12:47 기준 `buildid` `25690669`다. 11:48 로그의 `25672295`는 그 전 빌드다. 얼리면 사용자는 모드를 뺀 채로 시즌 5를 하거나, 깨진 `1 Mod loaded` 로그를 성공으로 오해한다. 롤백 산출물로 `LastEpoch_Hud-1.4.rar`(2026-04-02)와 설치된 DLL(2026-04-14)을 남기는 이유이지, 릴리스 계획은 아니다. 둘 다 1.4.7 노트 일자(2026-05-17)보다 빠르므로 "검증된 1.4.7 빌드"라고 부르지 않는다. 이름은 파일명 그대로 `LastEpoch_Hud-1.4.rar`다.
 
 ## Security & Privacy Considerations
 
@@ -482,7 +483,7 @@ BepInEx 6은 다른 플러그인 수명주기, 다른 Harmony 인스턴스 생�
 
 한 번만 찍는 부팅 줄:
 
-- `build_hash.txt` 내용 (이번 설치본 `bf5a46c674908886ecdabb6e9906b8a3bf81ec5b`)
+- `build_hash.txt` 내용 (12:47 설치본 `5cec0d5385ee8ac4d7d557676361703c0f058813`. 11:48 로그 시점은 `bf5a46c674908886ecdabb6e9906b8a3bf81ec5b`)
 - `Application.unityVersion` (기대값 `6000.4.8f1`)
 - 테스트된 Melon 버전 문자열과 `mod_version`
 - Harmony 적용 수: `MelonBase.HarmonyInstance.GetPatchedMethods().Count()`. Melon 개수 프로퍼티는 없다. 실패 목록은 로더의 Warn 채널. `Loader.cfg`의 `harmony_log_level`을 `None`으로 내리지 않는다
@@ -544,7 +545,7 @@ BepInEx 6은 다른 플러그인 수명주기, 다른 Harmony 인스턴스 생�
 2. **기본 로더 전략은 Melon 계열(대안 A)이다.** BepInEx는 G1과 더 새로운 MelonLoader가 support module 로드에 실패할 때만 연다. 0.7.3 + 현재 Cpp2IL/Il2CppInterop에서 `force_regeneration`만 하는 것은 이미 2026-10-03에 재현된 실패라 수정이 아니다.
 3. **`<>O` DLL 수동 편집은 최후 폴백이다.** Cecil 기준 FullName 중복이 0건이라 "중복 행 삭제" 도구가 이 파일을 고친다고 가정하지 않는다. 편집본은 git에 넣지 않는다.
 4. **그린 `dotnet build`를 부팅 성공으로 치지 않는다.** net8 throwaway 프로젝트가 생성 CoreModule을 컴파일에는 사용했고, CLR 로드에서는 같은 `BadImageFormatException`을 냈다.
-5. **`rollLegendaryPotential`은 확인된 유일한 이름 유실이고, 처분은 `adapt`다.** `RollLegendaryPotential`은 `Entry entry, Int32 minLegendaryPotential, Int32 ilvl, Single corruption, Single cofMultiplier, Boolean& improvedByCoF, Single nonCoFMultiplier`를 받고 `Int32`를 반환한다. 굴림값은 인자 7개 중 하나가 아니라 그 반환이다. 패치 대상 이름만 바꾸고 `ref int __result` 대입은 유지한다. `return false`로 원본을 건너뛸 때는 `improvedByCoF = false`를 넣는다. by-ref를 비운 `return false`는 금지다. attribute 제거는 그 대입이 호출자를 깨는 G6 로그가 있을 때만이다. `Enable_LegendaryPotencial` 기본값은 false다 (`Get_DefaultConfig`).
+5. **`rollLegendaryPotential`은 11:49 `Il2CppLE.dll`에서 확인된 유일한 이름 유실이고, 그 파일 기준으로 처분은 `adapt`다.** 12:47 metadata로 다시 생성하기 전에는 이 시그니처를 현재 바이너리의 것으로 확정하지 않는다. 재생성 뒤 Cecil이 같으면 `adapt`를 유지한다. `RollLegendaryPotential`은 `Entry entry, Int32 minLegendaryPotential, Int32 ilvl, Single corruption, Single cofMultiplier, Boolean& improvedByCoF, Single nonCoFMultiplier`를 받고 `Int32`를 반환한다. 굴림값은 인자 7개 중 하나가 아니라 그 반환이다. 패치 대상 이름만 바꾸고 `ref int __result` 대입은 유지한다. `return false`로 원본을 건너뛸 때는 `improvedByCoF = false`를 넣는다. by-ref를 비운 `return false`는 금지다. attribute 제거는 그 대입이 호출자를 깨는 G6 로그가 있을 때만이다. `Enable_LegendaryPotencial` 기본값은 false다 (`Get_DefaultConfig`).
 6. **시즌 5 게임플레이 변경으로 훅을 선제 재작성하지 않는다.** 스팟 체크에서 로그인, 드롭, 모노리스, 제작, Weaver, UIBase 키 입력은 같은 이름으로 남아 있다. `GainExp`의 세 long은 `characterExp` / `abilityExp` / `expForFavourGain`이고 세 prefix의 `__0` / `__1` / `__2`와 같다. 슬롯이 불명해서가 아니라, 이미 대응하므로 G6에서 값만 본다. `RollWeaversWill`의 네 번째 `Single`은 `corruption`이다. `Open`의 `Int32`는 `errorCode`다.
 7. **`TryApplyMenuFPSLimit`을 다시 연결하지 않는다.** 메서드는 `Il2CppGraphicsBackend.GraphicsSettingsProcessor`에 있지만 `699b9689`가 그 패치를 제거했다. 기준 구현은 `Fix_HudFpsCap`의 `Application.targetFrameRate`다.
 8. **버전 문자열은 `5.0.0-1.5.1`이다.** 기존 `AssemblyVersion`과 `AssemblyFileVersion`은 `5.0.0.0`, 기존 `AssemblyInformationalVersion`은 `5.0.0-1.5.1`. 이 변경은 PR9이고 G4 Keyboard 통과 뒤에만 머지한다. 로더 최소 버전은 G2가 빌드를 고르기 전까지 `0.6.0`이다.
@@ -563,7 +564,7 @@ BepInEx 6은 다른 플러그인 수명주기, 다른 Harmony 인스턴스 생�
 | ISS-002 | P0 | Baseline | 포크 `E:\dev\LastEpoch_Mods_fork`의 `master`는 `6054a5f2`. `main`은 `6ef51306`. 옛 클론 `E:\dev\LastEpoch_Mods`는 `be5fbacd`라 `isTutorialItem` 가드가 없다 | 구현은 포크에서만. `be5fbacd`에서 기능 작업 금지. 코드 브랜치는 `main`에서 `season5/1.5.1` | PR2 |
 | ISS-003 | P0 | Build | `LastEpochPath`가 csproj HintPath에만 존재. env와 `Directory.Build.props` 없음 | 예제 props는 빈 대입 없음. 로컬 props는 gitignore. 공유 파일에 머신 경로 값 금지 | PR2 |
 | ISS-004 | P0 | Compile | 1.5.1 interop으로 모드 `dotnet build`를 이 조사에서 돌리지 않음. CoreModule은 컴파일 가능, CLR 로드 불가 | `SkipPostBuild=true`로 Keyboard/WinGamepad. 그린 빌드 ≠ 부팅. 인벤토리는 로더 스파이크와 분리 | PR3, PR4 |
-| ISS-005 | P1 | Items | `ItemData.rollLegendaryPotential` 없음. `RollLegendaryPotential(...)` ret `Int32`. 인자 `entry`, `minLegendaryPotential`, `ilvl`, `corruption`, `cofMultiplier`, `improvedByCoF`, `nonCoFMultiplier`. 패치: `Items_Drop_LegendaryPotencial.cs`가 `ref int __result` | `adapt`. 이름만 바꾸고 `__result` 유지. `return false`일 때 `improvedByCoF = false`. 호출자가 깨질 때만 `remove-attribute` | PR4 |
+| ISS-005 | P1 | Items | 11:49 `Il2CppLE.dll`에 `ItemData.rollLegendaryPotential` 없음. `RollLegendaryPotential(...)` ret `Int32`. 인자 `entry`, `minLegendaryPotential`, `ilvl`, `corruption`, `cofMultiplier`, `improvedByCoF`, `nonCoFMultiplier`. 12:47 재생성 전의 증거다. 패치: `Items_Drop_LegendaryPotencial.cs`가 `ref int __result` | 재생성 DLL에서 시그니처가 같으면 `adapt`. 이름만 바꾸고 `__result` 유지. `return false`일 때 `improvedByCoF = false`. 시그니처가 달라지거나 호출자가 깨지면 `remove-attribute` | PR4 |
 | ISS-006 | P1 | Assets | `ProjectVersion.txt` `6000.0.42f1`. 플레이어 `6000.4.8f1`. 배포 입력 2,088,876, 게임 폴더 2,089,779, export 311,504와 311,573. Awake가 `isDone` 전에 `assetBundle`을 읽음 | 플레이어 파일만 로드. 대기(PR7)와 재빌드(PR8)를 분리. `"AssetBundle Error"`만으로 에디터 업그레이드 금지. `Library/` 커밋 금지 | PR7, PR8 |
 | ISS-007 | P1 | Save | `ModVersion` 문자열만. 파일 없음과 역직렬화 예외가 같은 `error`. `Save`가 `File.Delete` 후 `WriteAllText` (601–607행) | 세 갈래. 예외만 `.bak` 성공 후 기본값. `SchemaVersion == 0`은 `ModVersion`과 독립. 정상 저장은 임시 파일 후 교체. G4를 기다리지 않음 | PR6 |
 | ISS-008 | P1 | Version | `mod_version` `4.4.7`, 주석 `//LastEpoch 1.3`. 기존 `AssemblyVersion`과 `AssemblyFileVersion` `1.0.0.1123`, `AssemblyInformationalVersion` `0.0.0.1123`. 게임은 1.5.1 | PR9에서 세 기존 값을 `5.0.0.0` / `5.0.0-1.5.1`로 변경. G4 Keyboard 뒤. 로더 바닥은 유지 | PR9 |
@@ -591,7 +592,7 @@ P0/P1은 모두 아래 PR에 연결된다. P2는 PR이 없는 항목(ISS-018, IS
 - 모드 진입점: `LastEpoch_Hud/MelonLoader/Main.cs`, `LastEpoch_Hud/Scripts/Mods_Manager.cs`, `LastEpoch_Hud/Scripts/Save_Manager.cs`, `LastEpoch_Hud/Scripts/Hud_Manager.cs`.
 - 프로젝트: `LastEpoch_Hud/LastEpoch_Hud.csproj`, `LastEpoch_Hud/Properties/AssemblyInfo.cs`, `LastEpoch_Hud/MakeLatest.bat`.
 - 번들: `AssetBundleExport/ProjectSettings/ProjectVersion.txt`, `AssetBundleExport/Packages/manifest.json`, `AssetBundleExport/README.md`, `AssetBundleExport/Assets/AddressableAssetsData/`.
-- 게임 로그: `E:\SteamLibrary\steamapps\common\Last Epoch\MelonLoader\Latest.log`. 설정: `UserData\Loader.cfg`. 해시: `Last Epoch_Data\build_hash.txt`. Steam `appmanifest_899770.acf`의 `buildid` `25672295`.
+- 게임 로그: `E:\SteamLibrary\steamapps\common\Last Epoch\MelonLoader\Latest.log` (11:48, `buildid` `25672295`). 현재 설치본은 `appmanifest_899770.acf`의 `buildid` `25690669`, `build_hash.txt` `5cec0d5385ee8ac4d7d557676361703c0f058813`. 설정: `UserData\Loader.cfg`. 생성기 해시: `MelonLoader\Dependencies\Il2CppAssemblyGenerator\Config.cfg`.
 - 1.5.1 노트 (본문 확인): `https://lastepoch.com/1-5-1/patchnotes`.
 - 1.5 노트 URL (본 환경에서 본문 미확인): `https://lastepoch.com/1-5/patchnotes`. 포럼 이전 안내: `https://forum.lastepoch.com/t/season-5-rage-of-the-frostborn-patch-notes/81789`.
 - 스킬 이름: `https://maxroll.gg/last-epoch/news/last-epoch-season-5-new-skills`.
@@ -629,14 +630,14 @@ P0/P1은 모두 아래 PR에 연결된다. P2는 PR이 없는 항목(ISS-018, IS
 
 - 파일: 감사 CSV가 `missing` 또는 `adapt`로 표시한 소스만. 지금 아는 후보는 `LastEpoch_Hud/Scripts/Mods/Items/Items_Drop_LegendaryPotencial.cs`. G3 컴파일 오류 파일. NewItems가 패치 적용 예외로 로드를 중단시키면 그 attribute만 (ISS-013의 안전 절반).
 - 의존성: PR3의 CSV. PR5의 로더 스파이크가 열려 있어도 리뷰한다. 게임 안 동작 확인은 G2 뒤라고 PR 설명에 적는다.
-- 내용: `rollLegendaryPotential`은 attribute를 지우지 않는다. 대상 문자열을 `RollLegendaryPotential`로 바꾸고 `ref int __result` 대입을 유지한다. `CanRun()`이 true라 `return false`일 때 `improvedByCoF = false`를 넣는다. by-ref bool을 비운 `return false`는 넣지 않는다. `minLegendaryPotential`, `ilvl`, `corruption`, `cofMultiplier`, `nonCoFMultiplier`는 강제 중에는 쓰지 않는다. `Enable_LegendaryPotencial` 기본 false는 유지한다. 그 대입이 호출자를 깨는 G6 로그가 있으면 그때만 `remove-attribute`다. 다른 파일은 CSV에 있을 때만. 대체 메서드가 없는 `missing`만 `remove-attribute`다.
+- 내용: `rollLegendaryPotential`의 `adapt`는 12:47 `GameAssembly`로 다시 생성한 `Il2CppLE.dll`에서 Cecil이 11:49과 같은 시그니처를 보여줄 때만 머지한다. 그 전에는 attribute를 지우지 않고, 시그니처가 같으면 대상 문자열을 `RollLegendaryPotential`로 바꾸고 `ref int __result` 대입을 유지한다. `CanRun()`이 true라 `return false`일 때 `improvedByCoF = false`를 넣는다. by-ref bool을 비운 `return false`는 넣지 않는다. `minLegendaryPotential`, `ilvl`, `corruption`, `cofMultiplier`, `nonCoFMultiplier`는 강제 중에는 쓰지 않는다. `Enable_LegendaryPotencial` 기본 false는 유지한다. 그 대입이 호출자를 깨는 G6 로그가 있으면 그때만 `remove-attribute`다. 다른 파일은 CSV에 있을 때만. 대체 메서드가 없는 `missing`만 `remove-attribute`다.
 - 이슈: ISS-004의 컴파일 절반, ISS-005, ISS-009의 처분, ISS-013의 크래시 안전.
 
 ### PR5 — docs: 로더 G1/G2 스파이크
 
 - 파일: `docs/loader-spike.md`. 모드 런타임 코드와 생성 DLL은 커밋하지 않는다.
 - 의존성: PR2. PR3, PR4와 병렬이다. PR4를 기다리지 않는다.
-- 내용: G1 빈 `Mods` 실험 로그. G2에서 시험한 로더 버전과 `Assembly.LoadFrom` 결과. 생성 DLL 패치의 전후 SHA256은 문서에만 적고 git에는 넣지 않는다. #1159를 확정 패치로 인용하지 않는다.
+- 내용: G1 첫 줄은 `Config.cfg`의 `GameAssemblyHash`와 현재 `GameAssembly.dll` SHA512 비교다. 다르면 11:49 `Il2CppAssemblies`를 유지하지 않고 재생성 로그와 새 DLL SHA256을 남긴다. 그 다음 빈 `Mods` 실험 로그. G2에서 시험한 로더 버전과 `Assembly.LoadFrom` 결과. 생성 DLL 패치의 전후 SHA256은 문서에만 적고 git에는 넣지 않는다. #1159를 확정 패치로 인용하지 않는다.
 - 이슈: ISS-001.
 
 ### PR6 — fix: 세이브 스키마와 원자적 저장
