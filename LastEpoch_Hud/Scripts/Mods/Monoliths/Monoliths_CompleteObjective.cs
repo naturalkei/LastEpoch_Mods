@@ -83,11 +83,11 @@ namespace LastEpoch_Hud.Scripts.Mods.Monoliths
                             {
                                 if (monolith_zone_manager.waveSpawner.spawnsRemaining.Count > 0)
                                 {
-                                    GameObject obj = monolith_zone_manager.waveSpawner.spawnsRemaining[0];
-                                    if (!obj.IsNullOrDestroyed())
+                                    Actor obj = monolith_zone_manager.waveSpawner.spawnsRemaining[0];
+                                    if (!obj.IsNullOrDestroyed() && !obj.gameObject.IsNullOrDestroyed())
                                     {
-                                        obj.transform.position = Get_PlayerPosition();
-                                        obj.GetComponent<Dying>().die();
+                                        obj.gameObject.transform.position = Get_PlayerPosition();
+                                        obj.gameObject.GetComponent<Dying>().die();
                                     }
                                 }
                                 else if (!monolith_zone_manager.waveSpawner.isLastWave) { monolith_zone_manager.waveSpawner.spawnWave(); }

@@ -395,18 +395,7 @@ namespace LastEpoch_Hud.Scripts.Mods.NewItems
                 }
             }
 
-            [HarmonyPatch(typeof(UITooltipItem), "GetItemSprite")]
-            public class UITooltipItem_GetItemSprite
-            {
-                [HarmonyPostfix]
-                static void Postfix(ref Sprite __result, ItemData __0)
-                {
-                    if (__0.getAsUnpacked().FullName == Get_Unique_Name() && !Icon.IsNullOrDestroyed())
-                    {
-                        __result = Icon;
-                    }
-                }
-            }
+            // 1.5.1: UITooltipItem.GetItemSprite returns SoftRef<Sprite>. A live Sprite cannot be wrapped, so the tooltip override is deferred.
         }
         public class RaiseSpider
         {
@@ -430,14 +419,14 @@ namespace LastEpoch_Hud.Scripts.Mods.NewItems
                         actor_data = new ActorData();
                         actor_data.actorName = actor_data_name;
                         actor_data.name = actor_data_name;
-                        actor_data.ActorReference = ad.ActorReference;
+                        actor_data.ActorSoftRef = ad.ActorSoftRef;
                         actor_data.actorType = ActorData.Type.Minion;
                         actor_data.enableAnimationSlidingFix = true;
                         actor_data.eTag = ad.eTag;
                         actor_data.eTypes = ad.eTypes;
                         actor_data.id = 999999999; //65903566 //-675722824
                         actor_data.level = 53;
-                        actor_data.VisualsReference = ad.VisualsReference;
+                        actor_data.VisualsSoftRef = ad.VisualsSoftRef;
                         break;
                     }
                 }
@@ -455,7 +444,7 @@ namespace LastEpoch_Hud.Scripts.Mods.NewItems
                             {
                                 name = "Raise Spider",
                                 abilityName = "Raise Spider",
-                                abilitySprite = Icon,
+
                                 abilityObjectRotation = Ability.AbilityObjectRotation.FacingTarget,
                                 abilityObjectType = Ability.AbilityObjectType.Default,
                                 animation = AbilityAnimation.CastUp,
@@ -469,7 +458,7 @@ namespace LastEpoch_Hud.Scripts.Mods.NewItems
                                 minionTagsDisplay = ab.minionTagsDisplay,
                                 minionLimitForActiveMinionCriteria = 20,
                                 moveOrAttackFallback = Ability.MoveOrAttackFallback.Wait,
-                                abilityPrefab = prefab_obj,
+
                                 speedMultiplier = 1f,
                                 speedScaler = SP.CastSpeed,
                                 tags = AT.None,
@@ -491,7 +480,8 @@ namespace LastEpoch_Hud.Scripts.Mods.NewItems
                     {
                         if (ab.name == "SummonPyromancer")
                         {
-                            prefab_obj = Instantiate(ab.abilityPrefab, Vector3.zero, Quaternion.identity);
+                            prefab_obj = null;
+                            break;
                             prefab_obj.active = false;
                             prefab_obj.name = "Raise Spider prefab";
                             SummonEntityOnDeath summon = prefab_obj.GetComponent<SummonEntityOnDeath>();
@@ -549,10 +539,8 @@ namespace LastEpoch_Hud.Scripts.Mods.NewItems
                 {
                     if (Count() < summon_limit)
                     {
-                        if (ability.abilityPrefab.IsNullOrDestroyed()) { ability.abilityPrefab = Instantiate(prefab_obj, Vector3.zero, Quaternion.identity); }
-                        if (!ability.abilityPrefab.IsNullOrDestroyed())
-                        {                            
-                            ability.abilityPrefab.active = true;
+                        if (!prefab_obj.IsNullOrDestroyed())
+                        {
                             ability.CastAfterDelay(actor.GetComponent<AbilityObjectConstructor>(), target_position, target_position, 0f);
                         }
                     }
@@ -611,7 +599,7 @@ namespace LastEpoch_Hud.Scripts.Mods.NewItems
                         {
                             foreach (Ability ability in ability_list.abilities)
                             {
-                                if (ability.abilitySprite.IsNullOrDestroyed()) { ability.abilitySprite = Icon; }
+
                             }
                         }
                     }

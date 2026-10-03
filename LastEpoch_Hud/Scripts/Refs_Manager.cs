@@ -1,4 +1,4 @@
-﻿using HarmonyLib;
+using HarmonyLib;
 using Il2Cpp;
 using Il2CppItemFiltering;
 using Il2CppLE.Factions;
@@ -118,8 +118,8 @@ namespace LastEpoch_Hud.Scripts
 
             if ((game_uibase.IsNullOrDestroyed()) && (!UIBase.instance.IsNullOrDestroyed())) { game_uibase = UIBase.instance; }
             if ((epoch_input_manager.IsNullOrDestroyed()) && (!EpochInputManager.instance.IsNullOrDestroyed())) { epoch_input_manager = EpochInputManager.instance; }                               //Used to block input
-            if ((character_class_list.IsNullOrDestroyed()) && (!CharacterClassList.instance.IsNullOrDestroyed())) { character_class_list = CharacterClassList.instance; }                           //Hud, Maxroll
-            if ((item_list.IsNullOrDestroyed()) && (!ItemList.instance.IsNullOrDestroyed())) { item_list = ItemList.instance; }                                                                     //Hud, Blessings, Materials, Req, Sockets, NewItems
+            if ((character_class_list.IsNullOrDestroyed()) && (!CharacterClassList.get().IsNullOrDestroyed())) { character_class_list = CharacterClassList.get(); }                           //Hud, Maxroll
+            if ((item_list.IsNullOrDestroyed()) && (!ItemList.get().IsNullOrDestroyed())) { item_list = ItemList.get(); }                                                                     //Hud, Blessings, Materials, Req, Sockets, NewItems
             if (unique_list.IsNullOrDestroyed())
             {
                 if (UniqueList.instance.IsNullOrDestroyed()) { UniqueList.getUnique(0); }                                                                                                           //Force initialize Unique list
@@ -132,10 +132,10 @@ namespace LastEpoch_Hud.Scripts
             if (Scenes.IsGameScene())
             {
                 if (player_spawn_manager.IsNullOrDestroyed()) { player_spawn_manager = PlayerSpawnManager.instance; }                                                                                             //
-                if ((quest_list.IsNullOrDestroyed()) && (!QuestList.instance.IsNullOrDestroyed())) { quest_list = QuestList.instance; }                                                             //Complete MainQuest
+                if ((quest_list.IsNullOrDestroyed()) && (!QuestList.get().IsNullOrDestroyed())) { quest_list = QuestList.get(); }                                                             //Complete MainQuest
                 if ((scene_list.IsNullOrDestroyed()) && (!SceneList.instance.IsNullOrDestroyed())) { scene_list = SceneList.instance; }                                                             //Complete MainQuest
                 //craft_materials_holder //Need to fix for LE 1.4
-                if ((InventoryPanelUI.IsNullOrDestroyed()) && (!InventoryPanelUI.instance.IsNullOrDestroyed())) { InventoryPanelUI = InventoryPanelUI.instance; }                                   //AutoStore
+                if (InventoryPanelUI.IsNullOrDestroyed()) { InventoryPanelUI = UnityEngine.Object.FindObjectOfType<Il2Cpp.InventoryPanelUI>(); }                                   //AutoStore
                 if ((BlessingsPanel.IsNullOrDestroyed()) && (!InventoryPanelUI.IsNullOrDestroyed())) { BlessingsPanel = InventoryPanelUI.blessingPanel; }                                           //Blessings
                 if ((ground_item_manager.IsNullOrDestroyed()) && (!GroundItemManager.instance.IsNullOrDestroyed())) { ground_item_manager = GroundItemManager.instance; }                           //Hud
                 if ((item_containers_manager.IsNullOrDestroyed()) && (!ItemContainersManager.Instance.IsNullOrDestroyed())) { item_containers_manager = ItemContainersManager.Instance; }           //Unlock Idols, Items Update
@@ -157,7 +157,7 @@ namespace LastEpoch_Hud.Scripts
                 if (player_golbal_data_tracker.IsNullOrDestroyed()) { player_golbal_data_tracker = PlayerFinder.getGlobalDataTracker(); }                                                           //AutoPickupItems
                 if ((filter_manager.IsNullOrDestroyed()) && (!ItemFilterManager.Instance.IsNullOrDestroyed())) { filter_manager = ItemFilterManager.Instance; }                                     //AutoPickupItems, MinimapIcons
                 if ((camera_manager.IsNullOrDestroyed()) && (!CameraManager.instance.IsNullOrDestroyed())) { camera_manager = CameraManager.instance; }                                             //CameraOverride
-                if (map_panel.IsNullOrDestroyed() && (!MapPanel.instance.IsNullOrDestroyed())) { map_panel = MapPanel.instance; }                                                                   //MainQuest, TpSafe
+                if (map_panel.IsNullOrDestroyed()) { map_panel = UnityEngine.Object.FindObjectOfType<MapPanel>(); }                                                                   //MainQuest, TpSafe
 
                 if (!refsReadyFired
                     && !player_actor.IsNullOrDestroyed()

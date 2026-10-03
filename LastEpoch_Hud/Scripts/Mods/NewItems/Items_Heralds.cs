@@ -336,7 +336,6 @@ namespace LastEpoch_Hud.Scripts.Mods.NewItems
                                     {
                                         name = "Herald of Ice",
                                         abilityName = "Herald of Ice",
-                                        abilitySprite = Icon,
                                         abilityObjectRotation = Ability.AbilityObjectRotation.FacingTarget,
                                         abilityObjectType = Ability.AbilityObjectType.Default,
                                         animation = AbilityAnimation.Cast,
@@ -369,7 +368,8 @@ namespace LastEpoch_Hud.Scripts.Mods.NewItems
                         {
                             if (ab.name == Save_Manager.instance.data.NewItems.HeraldOfIce.VFX)
                             {
-                                prefab_obj = Instantiate(ab.abilityPrefab, Vector3.zero, Quaternion.identity);
+                                prefab_obj = null;
+                                break;
                                 prefab_obj.active = false;
                                 prefab_obj.name = "Herald of Ice prefab";
                                 SphereCollider collider = prefab_obj.GetComponent<SphereCollider>();
@@ -453,10 +453,8 @@ namespace LastEpoch_Hud.Scripts.Mods.NewItems
                     if (!ability.IsNullOrDestroyed() && (!target.IsNullOrDestroyed()) && (!prefab_obj.IsNullOrDestroyed()))
                     {
                         SetDamage(prefab_obj, AT.Cold, target.health.maxHealth);
-                        ability.abilityPrefab = Instantiate(prefab_obj, Vector3.zero, Quaternion.identity);
-                        if (!ability.abilityPrefab.IsNullOrDestroyed())
+                        if (!prefab_obj.IsNullOrDestroyed())
                         {
-                            ability.abilityPrefab.active = true;
                             ability.CastAfterDelay(actor.GetComponent<AbilityObjectConstructor>(), target.position(), target.position(), 0f);
                         }
                     }
@@ -546,7 +544,6 @@ namespace LastEpoch_Hud.Scripts.Mods.NewItems
                                     {
                                         name = "Herald of Ash",
                                         abilityName = "Herald of Ash",
-                                        abilitySprite = Icon,
                                         abilityObjectRotation = Ability.AbilityObjectRotation.FacingTarget,
                                         abilityObjectType = Ability.AbilityObjectType.Default,
                                         animation = AbilityAnimation.Cast,
@@ -579,7 +576,8 @@ namespace LastEpoch_Hud.Scripts.Mods.NewItems
                         {
                             if (ab.name == Save_Manager.instance.data.NewItems.HeraldOfFire.VFX)
                             {
-                                prefab_obj = Instantiate(ab.abilityPrefab, Vector3.zero, Quaternion.identity);
+                                prefab_obj = null;
+                                break;
                                 prefab_obj.active = false;
                                 prefab_obj.name = "Herald of Ash prefab";
                                 SphereCollider collider = prefab_obj.GetComponent<SphereCollider>();
@@ -663,10 +661,8 @@ namespace LastEpoch_Hud.Scripts.Mods.NewItems
                     if (!ability.IsNullOrDestroyed() && (!target.IsNullOrDestroyed()) && (!prefab_obj.IsNullOrDestroyed()))
                     {
                         SetDamage(prefab_obj, AT.Fire, target.health.maxHealth);
-                        ability.abilityPrefab = Instantiate(prefab_obj, Vector3.zero, Quaternion.identity);
-                        if (!ability.abilityPrefab.IsNullOrDestroyed())
+                        if (!prefab_obj.IsNullOrDestroyed())
                         {
-                            ability.abilityPrefab.active = true;
                             ability.CastAfterDelay(actor.GetComponent<AbilityObjectConstructor>(), target.position(), target.position(), 0f);
                         }
                     }
@@ -756,7 +752,6 @@ namespace LastEpoch_Hud.Scripts.Mods.NewItems
                                     {
                                         name = "Herald of Thunder",
                                         abilityName = "Herald of Thunder",
-                                        abilitySprite = Icon,
                                         abilityObjectRotation = Ability.AbilityObjectRotation.FacingTarget,
                                         abilityObjectType = Ability.AbilityObjectType.Default,
                                         animation = AbilityAnimation.Cast,
@@ -789,7 +784,8 @@ namespace LastEpoch_Hud.Scripts.Mods.NewItems
                         {
                             if (ab.name == Save_Manager.instance.data.NewItems.HeraldOfThunder.VFX)
                             {
-                                prefab_obj = Instantiate(ab.abilityPrefab, Vector3.zero, Quaternion.identity);
+                                prefab_obj = null;
+                                break;
                                 prefab_obj.active = false;
                                 prefab_obj.name = "Herald of Thunder prefab";
                                 SphereCollider collider = prefab_obj.GetComponent<SphereCollider>();
@@ -873,10 +869,8 @@ namespace LastEpoch_Hud.Scripts.Mods.NewItems
                     if (!ability.IsNullOrDestroyed() && (!target.IsNullOrDestroyed()) && (!prefab_obj.IsNullOrDestroyed()))
                     {
                         SetDamage(prefab_obj, AT.Lightning, target.health.maxHealth);
-                        ability.abilityPrefab = Instantiate(prefab_obj, Vector3.zero, Quaternion.identity);
-                        if (!ability.abilityPrefab.IsNullOrDestroyed())
+                        if (!prefab_obj.IsNullOrDestroyed())
                         {
-                            ability.abilityPrefab.active = true;
                             ability.CastAfterDelay(actor.GetComponent<AbilityObjectConstructor>(), target.position(), target.position(), 0f);
                         }
                     }
@@ -966,7 +960,6 @@ namespace LastEpoch_Hud.Scripts.Mods.NewItems
                                     {
                                         name = "Herald of Agony",
                                         abilityName = "Herald of Agony",
-                                        abilitySprite = Icon,
                                         abilityObjectRotation = Ability.AbilityObjectRotation.FacingTarget,
                                         abilityObjectType = Ability.AbilityObjectType.Default,
                                         animation = AbilityAnimation.Cast,
@@ -999,7 +992,8 @@ namespace LastEpoch_Hud.Scripts.Mods.NewItems
                         {
                             if (ab.name == Save_Manager.instance.data.NewItems.HeraldOfAgony.VFX)
                             {
-                                prefab_obj = Instantiate(ab.abilityPrefab, Vector3.zero, Quaternion.identity);
+                                prefab_obj = null;
+                                break;
                                 prefab_obj.active = false;
                                 prefab_obj.name = "Herald of Agony prefab";
                                 SphereCollider collider = prefab_obj.GetComponent<SphereCollider>();
@@ -1083,10 +1077,8 @@ namespace LastEpoch_Hud.Scripts.Mods.NewItems
                     if (!ability.IsNullOrDestroyed() && (!target.IsNullOrDestroyed()) && (!prefab_obj.IsNullOrDestroyed()))
                     {
                         SetDamage(prefab_obj, AT.Poison, target.health.maxHealth);
-                        ability.abilityPrefab = Instantiate(prefab_obj, Vector3.zero, Quaternion.identity);
-                        if (!ability.abilityPrefab.IsNullOrDestroyed())
+                        if (!prefab_obj.IsNullOrDestroyed())
                         {
-                            ability.abilityPrefab.active = true;
                             ability.CastAfterDelay(actor.GetComponent<AbilityObjectConstructor>(), target.position(), target.position(), 0f);
                         }
                     }
@@ -1176,7 +1168,6 @@ namespace LastEpoch_Hud.Scripts.Mods.NewItems
                                     {
                                         name = "Herald of Purity",
                                         abilityName = "Herald of Purity",
-                                        abilitySprite = Icon,
                                         abilityObjectRotation = Ability.AbilityObjectRotation.FacingTarget,
                                         abilityObjectType = Ability.AbilityObjectType.Default,
                                         animation = AbilityAnimation.Cast,
@@ -1209,7 +1200,8 @@ namespace LastEpoch_Hud.Scripts.Mods.NewItems
                         {
                             if (ab.name == Save_Manager.instance.data.NewItems.HeraldOfPurity.VFX)
                             {
-                                prefab_obj = Instantiate(ab.abilityPrefab, Vector3.zero, Quaternion.identity);
+                                prefab_obj = null;
+                                break;
                                 prefab_obj.active = false;
                                 prefab_obj.name = "Herald of Purity prefab";
                                 SphereCollider collider = prefab_obj.GetComponent<SphereCollider>();
@@ -1293,10 +1285,8 @@ namespace LastEpoch_Hud.Scripts.Mods.NewItems
                     if (!ability.IsNullOrDestroyed() && (!target.IsNullOrDestroyed()) && (!prefab_obj.IsNullOrDestroyed()))
                     {
                         SetDamage(prefab_obj, AT.Physical, target.health.maxHealth);
-                        ability.abilityPrefab = Instantiate(prefab_obj, Vector3.zero, Quaternion.identity);
-                        if (!ability.abilityPrefab.IsNullOrDestroyed())
+                        if (!prefab_obj.IsNullOrDestroyed())
                         {
-                            ability.abilityPrefab.active = true;
                             ability.CastAfterDelay(actor.GetComponent<AbilityObjectConstructor>(), target.position(), target.position(), 0f);
                         }
                     }
@@ -1362,34 +1352,7 @@ namespace LastEpoch_Hud.Scripts.Mods.NewItems
                 }
             }
 
-            [HarmonyPatch(typeof(UITooltipItem), "GetItemSprite")]
-            public class UITooltipItem_GetItemSprite
-            {
-                [HarmonyPostfix]
-                static void Postfix(ref Sprite __result, ItemData __0)
-                {
-                    if (__0.getAsUnpacked().FullName == Ice.Get_Unique_Name() && !Ice.Icon.IsNullOrDestroyed())
-                    {
-                        __result = Ice.Icon;
-                    }
-                    else if (__0.getAsUnpacked().FullName == Fire.Get_Unique_Name() && !Fire.Icon.IsNullOrDestroyed())
-                    {
-                        __result = Fire.Icon;
-                    }
-                    else if (__0.getAsUnpacked().FullName == Lightning.Get_Unique_Name() && !Lightning.Icon.IsNullOrDestroyed())
-                    {
-                        __result = Lightning.Icon;
-                    }
-                    else if (__0.getAsUnpacked().FullName == Poison.Get_Unique_Name() && !Poison.Icon.IsNullOrDestroyed())
-                    {
-                        __result = Poison.Icon;
-                    }
-                    else if (__0.getAsUnpacked().FullName == Physical.Get_Unique_Name() && !Physical.Icon.IsNullOrDestroyed())
-                    {
-                        __result = Physical.Icon;
-                    }
-                }
-            }
+            // 1.5.1: UITooltipItem.GetItemSprite returns SoftRef<Sprite>. A live Sprite cannot be wrapped, so the tooltip override is deferred.
         }
         public class Languagues
         {
