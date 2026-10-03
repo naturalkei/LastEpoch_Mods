@@ -6845,7 +6845,7 @@ namespace LastEpoch_Hud.Scripts
                             if (affix.canRollOn.Contains(item_equipmenttype)) { naturally = true; }
                             bool corrupted = false;
                             if (affix.displayCategory == AffixList.AffixDisplayCategory.CORRUPTED) { corrupted = true; }
-                            AddShardInView(affix.affixId, affix.affixName, affix.type, affix_idol, naturally, corrupted);
+                            AddShardInView(affix.affixId, FormatAffixChoiceLabel(affix.affixName, affix.type, affix.classSpecificity), affix.type, affix_idol, naturally, corrupted);
                         }
                     }
                     foreach (AffixList.MultiAffix affix in AffixList.get().multiAffixes)
@@ -6863,7 +6863,7 @@ namespace LastEpoch_Hud.Scripts
                             if (affix.canRollOn.Contains(item_equipmenttype)) { naturally = true; }
                             bool corrupted = false;
                             if (affix.displayCategory == AffixList.AffixDisplayCategory.CORRUPTED) { corrupted = true; }
-                            AddShardInView(affix.affixId, affix.affixName, affix.type, affix_idol, naturally, corrupted);
+                            AddShardInView(affix.affixId, FormatAffixChoiceLabel(affix.affixName, affix.type, affix.classSpecificity), affix.type, affix_idol, naturally, corrupted);
                         }
                     }
                     shard_initialized = true;
@@ -6874,6 +6874,25 @@ namespace LastEpoch_Hud.Scripts
                     {
                         Destroy(go);
                     }                        
+                }
+                // ClassSpecificity is a bit field: NonSpecific=1, then one bit per class.
+                public static string FormatAffixChoiceLabel(string affixName, AffixList.AffixType affixType, AffixList.ClassSpecificity specificity)
+                {
+                    string head = "";
+                    if (affixType == AffixList.AffixType.PREFIX) { head = "[afx] "; }
+                    else if (affixType == AffixList.AffixType.SUFFIX) { head = "[sfx] "; }
+
+                    int spec = (int)specificity;
+                    System.Collections.Generic.List<string> classes = new System.Collections.Generic.List<string>();
+                    if ((spec & (int)AffixList.ClassSpecificity.Primalist) != 0) { classes.Add("Primalist"); }
+                    if ((spec & (int)AffixList.ClassSpecificity.Mage) != 0) { classes.Add("Mage"); }
+                    if ((spec & (int)AffixList.ClassSpecificity.Sentinel) != 0) { classes.Add("Sentinel"); }
+                    if ((spec & (int)AffixList.ClassSpecificity.Acolyte) != 0) { classes.Add("Acolyte"); }
+                    if ((spec & (int)AffixList.ClassSpecificity.Rogue) != 0) { classes.Add("Rogue"); }
+
+                    string only = "";
+                    if (classes.Count > 0) { only = " (only " + string.Join(", ", classes) + ")"; }
+                    return head + affixName + only;
                 }
                 public static void AddShardInView(int id, string name, AffixList.AffixType affix_type, bool idol, bool naturally, bool corrupted)
                 {
