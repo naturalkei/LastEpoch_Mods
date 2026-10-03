@@ -37,6 +37,7 @@ namespace LastEpoch_Hud
         public override void OnLateUpdate()
         {
             if ((!Base.Initializing) && (!Base.Initialized)) { Base.Init(); }
+            Scripts.Mods.Login.Login_AutoLoginOffline.Tick();
             if (!diagnosticsAttachAttempted
                 && Scripts.ModUI.SaveManager.instance != null
                 && Scripts.ModUI.SaveManager.instance.initialized)
