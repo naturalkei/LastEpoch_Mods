@@ -417,55 +417,44 @@ namespace LastEpoch_Hud.Scripts
                 {
                     Content.OdlForceDrop.implicits.active = Content.OdlForceDrop.implicits_enable;
                     Content.OdlForceDrop.implicits_border.active = Content.OdlForceDrop.implicits_enable;
-                    if (!Content.OdlForceDrop.implicits_enable) { Content.OdlForceDrop.implicits_roll = false; }                    
-                    Content.OdlForceDrop.implicit_0.active = Content.OdlForceDrop.implicits_roll;
-                    Content.OdlForceDrop.implicit_1.active = Content.OdlForceDrop.implicits_roll;
-                    Content.OdlForceDrop.implicit_2.active = Content.OdlForceDrop.implicits_roll;
+                    Content.OdlForceDrop.implicit_0.active = Content.OdlForceDrop.implicits_enable && Content.OdlForceDrop.implicits_roll;
+                    Content.OdlForceDrop.implicit_1.active = Content.OdlForceDrop.implicits_enable && Content.OdlForceDrop.implicits_roll;
+                    Content.OdlForceDrop.implicit_2.active = Content.OdlForceDrop.implicits_enable && Content.OdlForceDrop.implicits_roll;
 
                     Content.OdlForceDrop.forgin_potencial.active = Content.OdlForceDrop.forgin_potencial_enable;
                     Content.OdlForceDrop.forgin_potencial_border.active = Content.OdlForceDrop.forgin_potencial_enable;
-                    if (!Content.OdlForceDrop.forgin_potencial_enable) { Content.OdlForceDrop.forgin_potencial_roll = false; }
-                    Content.OdlForceDrop.forgin_potencial_value.active = Content.OdlForceDrop.forgin_potencial_roll;
+                    Content.OdlForceDrop.forgin_potencial_value.active = Content.OdlForceDrop.forgin_potencial_enable && Content.OdlForceDrop.forgin_potencial_roll;
 
                     Content.OdlForceDrop.seal.active = Content.OdlForceDrop.seal_enable;
                     Content.OdlForceDrop.seal_border.active = Content.OdlForceDrop.seal_enable;
-                    if (!Content.OdlForceDrop.seal_enable) { Content.OdlForceDrop.seal_roll = false; }
-                    Content.OdlForceDrop.seal_shard.active = Content.OdlForceDrop.seal_roll;
-                    Content.OdlForceDrop.seal_tier.active = Content.OdlForceDrop.seal_roll;
-                    Content.OdlForceDrop.seal_value.active = Content.OdlForceDrop.seal_roll;
-                    if (Content.OdlForceDrop.seal_roll)
+                    bool show_seal = Content.OdlForceDrop.seal_enable && Content.OdlForceDrop.seal_roll;
+                    Content.OdlForceDrop.seal_shard.active = show_seal;
+                    Content.OdlForceDrop.seal_tier.active = show_seal;
+                    Content.OdlForceDrop.seal_value.active = show_seal;
+                    if (Content.OdlForceDrop.seal_id == -1) { Content.OdlForceDrop.seal_name = Content.OdlForceDrop.select_affix; }
+                    if (!Content.OdlForceDrop.seal_select_text.IsNullOrDestroyed())
                     {
-                        if (Content.OdlForceDrop.seal_id == -1) { Content.OdlForceDrop.seal_name = Content.OdlForceDrop.select_affix; }
-                        if (!Content.OdlForceDrop.seal_select_text.IsNullOrDestroyed())
-                        {
-                            Content.OdlForceDrop.seal_select_text.text = Content.OdlForceDrop.seal_name;
-                        }
-                        else { Main.logger_instance.Error("seal_select_text NULLLLL"); }                            
+                        Content.OdlForceDrop.seal_select_text.text = Content.OdlForceDrop.seal_name;
                     }
-                    else { Content.OdlForceDrop.seal_id = -1; }
+                    else { Main.logger_instance.Error("seal_select_text NULLLLL"); }
                     
                     Content.OdlForceDrop.affixs.active = Content.OdlForceDrop.affixs_enable;
                     Content.OdlForceDrop.affixs_border.active = Content.OdlForceDrop.affixs_enable;
-                    if (!Content.OdlForceDrop.affixs_enable) { Content.OdlForceDrop.affixs_roll = false; }
-                    Content.OdlForceDrop.affixs_numbers.active = Content.OdlForceDrop.affixs_roll;
-                    if ((Content.OdlForceDrop.affixs_numbers.active) && (!Content.OdlForceDrop.affixs_numbers_text.IsNullOrDestroyed()) && (!Content.OdlForceDrop.affixs_numbers_slider.IsNullOrDestroyed()))
+                    bool show_affixs = Content.OdlForceDrop.affixs_enable && Content.OdlForceDrop.affixs_roll;
+                    Content.OdlForceDrop.affixs_numbers.active = show_affixs;
+                    if ((show_affixs) && (!Content.OdlForceDrop.affixs_numbers_text.IsNullOrDestroyed()) && (!Content.OdlForceDrop.affixs_numbers_slider.IsNullOrDestroyed()))
                     {
                         Content.OdlForceDrop.affixs_numbers_text.text = System.Convert.ToInt32(Content.OdlForceDrop.affixs_numbers_slider.value).ToString();
                     }
                     if (Content.OdlForceDrop.affixs_roll)
                     {
-                        if (Content.OdlForceDrop.affixs_numbers_slider.value > 0) { Content.OdlForceDrop.affix_0.active = true; }
-                        else { Content.OdlForceDrop.affix_0.active = false; Content.OdlForceDrop.affix_0_id = -1; }
-                        if (Content.OdlForceDrop.affixs_numbers_slider.value > 1) { Content.OdlForceDrop.affix_1.active = true; }
-                        else { Content.OdlForceDrop.affix_1.active = false; Content.OdlForceDrop.affix_1_id = -1; }
-                        if (Content.OdlForceDrop.affixs_numbers_slider.value > 2) { Content.OdlForceDrop.affix_2.active = true; }
-                        else { Content.OdlForceDrop.affix_2.active = false; Content.OdlForceDrop.affix_2_id = -1; }
-                        if (Content.OdlForceDrop.affixs_numbers_slider.value > 3) { Content.OdlForceDrop.affix_3.active = true; }
-                        else { Content.OdlForceDrop.affix_3.active = false; Content.OdlForceDrop.affix_3_id = -1; }
-                        if (Content.OdlForceDrop.affixs_numbers_slider.value > 4) { Content.OdlForceDrop.affix_4.active = true; }
-                        else { Content.OdlForceDrop.affix_4.active = false; Content.OdlForceDrop.affix_4_id = -1; }
-                        if (Content.OdlForceDrop.affixs_numbers_slider.value > 5) { Content.OdlForceDrop.affix_5.active = true; }
-                        else { Content.OdlForceDrop.affix_5.active = false; Content.OdlForceDrop.affix_5_id = -1; }
+                        float affix_count = Content.OdlForceDrop.affixs_numbers_slider.IsNullOrDestroyed() ? 0f : Content.OdlForceDrop.affixs_numbers_slider.value;
+                        Content.OdlForceDrop.affix_0.active = show_affixs && affix_count > 0;
+                        Content.OdlForceDrop.affix_1.active = show_affixs && affix_count > 1;
+                        Content.OdlForceDrop.affix_2.active = show_affixs && affix_count > 2;
+                        Content.OdlForceDrop.affix_3.active = show_affixs && affix_count > 3;
+                        Content.OdlForceDrop.affix_4.active = show_affixs && affix_count > 4;
+                        Content.OdlForceDrop.affix_5.active = show_affixs && affix_count > 5;
 
                         if (Content.OdlForceDrop.affix_0_id == -1) { Content.OdlForceDrop.affix_0_name = Content.OdlForceDrop.select_affix; }
                         if (Content.OdlForceDrop.affix_1_id == -1) { Content.OdlForceDrop.affix_1_name = Content.OdlForceDrop.select_affix; }
@@ -508,17 +497,11 @@ namespace LastEpoch_Hud.Scripts
                     else
                     {
                         Content.OdlForceDrop.affix_0.active = false;
-                        Content.OdlForceDrop.affix_0_id = -1;
                         Content.OdlForceDrop.affix_1.active = false;
-                        Content.OdlForceDrop.affix_1_id = -1;
                         Content.OdlForceDrop.affix_2.active = false;
-                        Content.OdlForceDrop.affix_2_id = -1;
                         Content.OdlForceDrop.affix_3.active = false;
-                        Content.OdlForceDrop.affix_3_id = -1;
                         Content.OdlForceDrop.affix_4.active = false;
-                        Content.OdlForceDrop.affix_4_id = -1;
                         Content.OdlForceDrop.affix_5.active = false;
-                        Content.OdlForceDrop.affix_5_id = -1;
                     }
                     
                     Content.OdlForceDrop.unique_mods.active = Content.OdlForceDrop.unique_mods_enable;
@@ -671,13 +654,11 @@ namespace LastEpoch_Hud.Scripts
 
                     Content.OdlForceDrop.legenday_potencial.active = Content.OdlForceDrop.legenday_potencial_enable;
                     Content.OdlForceDrop.legenday_potencial_border.active = Content.OdlForceDrop.legenday_potencial_enable;
-                    if (!Content.OdlForceDrop.legenday_potencial_enable) { Content.OdlForceDrop.legenday_potencial_roll = false; }
-                    Content.OdlForceDrop.legenday_potencial_value.active = Content.OdlForceDrop.legenday_potencial_roll;
+                    Content.OdlForceDrop.legenday_potencial_value.active = Content.OdlForceDrop.legenday_potencial_enable && Content.OdlForceDrop.legenday_potencial_roll;
 
                     Content.OdlForceDrop.weaver_will.active = Content.OdlForceDrop.weaver_will_enable;
                     Content.OdlForceDrop.weaver_will_border.active = Content.OdlForceDrop.weaver_will_enable;
-                    if (!Content.OdlForceDrop.weaver_will_enable) { Content.OdlForceDrop.weaver_will_roll = false; }
-                    Content.OdlForceDrop.weaver_will_value.active = Content.OdlForceDrop.weaver_will_roll;
+                    Content.OdlForceDrop.weaver_will_value.active = Content.OdlForceDrop.weaver_will_enable && Content.OdlForceDrop.weaver_will_roll;
 
                     Content.OdlForceDrop.corrupted.active = Content.OdlForceDrop.corrupted_enable;
                     Content.OdlForceDrop.corrupted_border.active = Content.OdlForceDrop.corrupted_enable;
@@ -7025,16 +7006,6 @@ namespace LastEpoch_Hud.Scripts
                         corrupted_enable = true;
                         quantity_enable = true;
                         btn_enable = true;
-                    }
-                    else //Reset all dropdown
-                    {
-                        implicits_dropdown.value = 0;
-                        forgin_potencial_dropdown.value = 0;
-                        seal_dropdown.value = 0;
-                        affixs_dropdown.value = 0;
-                        unique_mods_dropdown.value = 0;
-                        legenday_potencial_dropdown.value = 0;
-                        weaver_will_dropdown.value = 0;
                     }
                 }
                 public static void Drop()
