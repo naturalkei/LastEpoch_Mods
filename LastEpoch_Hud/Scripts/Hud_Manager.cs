@@ -7045,8 +7045,11 @@ namespace LastEpoch_Hud.Scripts
                             }
                             if (affixs_roll)
                             {
+                                // The count slider hides later rows. Those rows keep their settings,
+                                // but a dropped item only receives the rows still inside the count.
+                                int affix_limit = affixs_numbers_slider.IsNullOrDestroyed() ? 0 : System.Convert.ToInt32(affixs_numbers_slider.value);
                                 System.Collections.Generic.List<ItemAffix> new_affixes = new System.Collections.Generic.List<ItemAffix>();
-                                if (affix_0_id > -1)
+                                if ((affix_limit > 0) && (affix_0_id > -1))
                                 {
                                     if (affix_0_random_toggle.isOn)
                                     {
@@ -7057,7 +7060,7 @@ namespace LastEpoch_Hud.Scripts
                                         new_affixes.Add(MakeAffix(affix_0_id, (byte)affix_0_tier_slider.value, (byte)affix_0_value_slider.value, false));
                                     }
                                 }
-                                if (affix_1_id > -1)
+                                if ((affix_limit > 1) && (affix_1_id > -1))
                                 {
                                     if (affix_1_random_toggle.isOn)
                                     {
@@ -7068,7 +7071,7 @@ namespace LastEpoch_Hud.Scripts
                                         new_affixes.Add(MakeAffix(affix_1_id, (byte)affix_1_tier_slider.value, (byte)affix_1_value_slider.value, false));
                                     }                                        
                                 }
-                                if (affix_2_id > -1)
+                                if ((affix_limit > 2) && (affix_2_id > -1))
                                 {
                                     if (affix_2_random_toggle.isOn)
                                     {
@@ -7079,7 +7082,7 @@ namespace LastEpoch_Hud.Scripts
                                         new_affixes.Add(MakeAffix(affix_2_id, (byte)affix_2_tier_slider.value, (byte)affix_2_value_slider.value, false));
                                     }                                        
                                 }
-                                if (affix_3_id > -1)
+                                if ((affix_limit > 3) && (affix_3_id > -1))
                                 {
                                     if (affix_3_random_toggle.isOn)
                                     {
@@ -7090,7 +7093,7 @@ namespace LastEpoch_Hud.Scripts
                                         new_affixes.Add(MakeAffix(affix_3_id, (byte)affix_3_tier_slider.value, (byte)affix_3_value_slider.value, false));
                                     }                                        
                                 }
-                                if (affix_4_id > -1)
+                                if ((affix_limit > 4) && (affix_4_id > -1))
                                 {
                                     if (affix_4_random_toggle.isOn)
                                     {
@@ -7101,7 +7104,7 @@ namespace LastEpoch_Hud.Scripts
                                         new_affixes.Add(MakeAffix(affix_4_id, (byte)affix_4_tier_slider.value, (byte)affix_4_value_slider.value, false));
                                     }                                        
                                 }
-                                if (affix_5_id > -1)
+                                if ((affix_limit > 5) && (affix_5_id > -1))
                                 {
                                     if (affix_5_random_toggle.isOn)
                                     {
