@@ -38,6 +38,7 @@ namespace LastEpoch_Hud.Scripts
         private static Canvas hud_canvas = null;
         private readonly string asset_bundle_name = "lastepochmods"; //Name of asset file
         private bool hud_initializing = false;
+        private bool hud_init_failed = false;
         private bool data_initializing = false;
 
         private bool updating = false;        
@@ -138,6 +139,8 @@ namespace LastEpoch_Hud.Scripts
         void Init_Hud()
         {
             hud_initializing = true;
+            try
+            {
             if (Main.debug) { Main.logger_instance.Msg("Hud Manager : Load hud object in assets"); }
             if (!asset_bundle.IsNullOrDestroyed())
             {
@@ -229,12 +232,22 @@ namespace LastEpoch_Hud.Scripts
                 }
                 else { Main.logger_instance.Error("Hud Manager : Shard Prefab name not found"); }
             }
-
-            hud_initializing = false;
+            }
+            catch (System.Exception ex)
+            {
+                hud_init_failed = true;
+                Main.logger_instance?.Error("Hud Manager : Init_Hud failed: " + ex.Message);
+            }
+            finally
+            {
+                hud_initializing = false;
+            }
         }
         void Init_UserData()
         {
             data_initializing = true;
+            try
+            {
             if (!Save_Manager.instance.IsNullOrDestroyed())
             {
                 if (Main.debug) { Main.logger_instance.Msg("Hud Manager : Initialize user config"); }
@@ -249,6 +262,12 @@ namespace LastEpoch_Hud.Scripts
                     data_initialized = true;
                 }
             }
+            }
+            catch (System.Exception ex)
+            {
+                Main.logger_instance?.Error("Hud Manager : Init_UserData failed: " + ex.Message);
+                return;
+            }
             data_initializing = false;
         }
         void Update_Refs()
@@ -260,7 +279,7 @@ namespace LastEpoch_Hud.Scripts
                 if ((!Hud_Base.initiliazed_events) && (!game_pause_menu.IsNullOrDestroyed()) && (!Hud_Base.Default_PauseMenu_Btns.IsNullOrDestroyed())) { Hud_Base.Set_Events(); }
                 if (Hud_Base.Get_DefaultPauseMenu_Open()) { Hud_Base.Toogle_DefaultPauseMenu(false); }
             }
-            if (!(asset_bundle.IsNullOrDestroyed()) && (hud_object.IsNullOrDestroyed()) && (!hud_initializing)) { Init_Hud(); }
+            if (!(asset_bundle.IsNullOrDestroyed()) && (hud_object.IsNullOrDestroyed()) && (!hud_initializing) && (!hud_init_failed)) { Init_Hud(); }
         }
         void Update_Hud_Scale()
         {
@@ -4297,9 +4316,10 @@ namespace LastEpoch_Hud.Scripts
                             {
                                 Dungeons.enter_without_key_toggle = Functions.Get_ToggleInPanel(scene_dungeons_content, "EnterWithoutKey", "Toggle_Scenes_Dungeons_EnterWithoutKey");
 
-                                Teleport.scene_dropdown = Functions.GetChild(scene_dungeons_content, "Teleport_Dropdown").GetComponent<Dropdown>();
-                                Teleport.scene_button = Functions.GetChild(scene_dungeons_content, "Teleport_Btn").GetComponent<Button>();
-                                Teleport.Init();
+                                GameObject teleport_dropdown = Functions.GetChild(scene_dungeons_content, "Teleport_Dropdown");
+                                if (!teleport_dropdown.IsNullOrDestroyed()) { Teleport.scene_dropdown = teleport_dropdown.GetComponent<Dropdown>(); }
+                                GameObject teleport_button = Functions.GetChild(scene_dungeons_content, "Teleport_Btn");
+                                if (!teleport_button.IsNullOrDestroyed()) { Teleport.scene_button = teleport_button.GetComponent<Button>(); }
                             }
                             GameObject scene_minimap_content = Functions.GetViewportContent(content_obj, "Center", "Scenes_Minimap_Content");
                             if (!scene_minimap_content.IsNullOrDestroyed())
@@ -4510,10 +4530,15 @@ namespace LastEpoch_Hud.Scripts
                 {
                     public static Dropdown scene_dropdown = null;
                     public static Button scene_button = null;
+                    public static bool list_ready = false;
                     public static readonly System.Action Scene_OnClick_Action = new System.Action(Scene_Teleport);
 
                     public static void Init()
                     {
+                        if (list_ready) { return; }
+                        if (scene_dropdown.IsNullOrDestroyed()) { return; }
+                        if (SceneList.instance.IsNullOrDestroyed()) { return; }
+                        if (SceneList.instance.sceneDetailsCollection == null) { return; }
                         scene_dropdown.options.Clear();
                         scene_dropdown.options.Add(new Dropdown.OptionData("Select"));
 
@@ -4549,6 +4574,7 @@ namespace LastEpoch_Hud.Scripts
                                 }
                             }
                         }
+                        list_ready = true;
                     }
                     public static void Scene_Teleport()
                     {
