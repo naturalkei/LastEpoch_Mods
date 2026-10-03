@@ -54,6 +54,8 @@ namespace LastEpoch_Hud.Scripts
 #endif
 #if KEYBOARD
         private bool exit = false;
+        private bool pause_was_open = false;
+        private bool ignore_escape_release = false;
 #endif
 
         void Awake()
@@ -89,10 +91,18 @@ namespace LastEpoch_Hud.Scripts
 #if KEYBOARD
                             if (!Refs_Manager.epoch_input_manager.forceDisableInput) { Refs_Manager.epoch_input_manager.forceDisableInput = true; }
                         }
-                        if (Input.GetKeyDown(KeyCode.Escape)) { exit = true; }
-                        if (!Hud_Base.Btn_Resume.IsNullOrDestroyed())
+                        // 1.5.1: the pause menu is already open on the Escape press that opened it.
+                        // That press must not close the HUD when the key is released.
+                        if (!pause_was_open)
                         {
-                            if ((Input.GetKeyUp(KeyCode.Escape)) && (exit))
+                            pause_was_open = true;
+                            if (Input.GetKey(KeyCode.Escape)) { ignore_escape_release = true; exit = false; }
+                        }
+                        if ((Input.GetKeyDown(KeyCode.Escape)) && (!ignore_escape_release)) { exit = true; }
+                        if (Input.GetKeyUp(KeyCode.Escape))
+                        {
+                            if (ignore_escape_release) { ignore_escape_release = false; exit = false; }
+                            else if ((exit) && (!Hud_Base.Btn_Resume.IsNullOrDestroyed()))
                             {
                                 Hud_Base.Btn_Resume.onClick.Invoke();
                                 exit = false;
@@ -126,6 +136,11 @@ namespace LastEpoch_Hud.Scripts
                     {
                         updating = true;
                         if (hud_object.active) { hud_object.active = false; Mods.Fixs.Fix_HudFpsCap.SetHudCapActive(false); }
+#if KEYBOARD
+                        pause_was_open = false;
+                        ignore_escape_release = false;
+                        exit = false;
+#endif
                         if (!Refs_Manager.epoch_input_manager.IsNullOrDestroyed())
                         {
                             if (Refs_Manager.epoch_input_manager.forceDisableInput) { Refs_Manager.epoch_input_manager.forceDisableInput = false; }
