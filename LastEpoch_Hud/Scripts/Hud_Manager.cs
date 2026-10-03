@@ -6879,8 +6879,8 @@ namespace LastEpoch_Hud.Scripts
                 public static string FormatAffixChoiceLabel(string affixName, AffixList.AffixType affixType, AffixList.ClassSpecificity specificity)
                 {
                     string head = "";
-                    if (affixType == AffixList.AffixType.PREFIX) { head = "[afx] "; }
-                    else if (affixType == AffixList.AffixType.SUFFIX) { head = "[sfx] "; }
+                    if (affixType == AffixList.AffixType.PREFIX) { head = "[P] "; }
+                    else if (affixType == AffixList.AffixType.SUFFIX) { head = "[S] "; }
 
                     int spec = (int)specificity;
                     System.Collections.Generic.List<string> classes = new System.Collections.Generic.List<string>();
